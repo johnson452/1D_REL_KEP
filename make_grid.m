@@ -7,7 +7,7 @@ grid.xmin = 0;
 grid.xmax = 1.0;
 grid.time = 0;
 grid.t_max = 0.35;
-grid.Output_interval = 100;
+grid.Output_interval = 1000;
 Nx = grid.Nx;
 
 %[DEFAULT] Constants, updated in IC.m

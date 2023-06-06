@@ -71,14 +71,14 @@ pv_j_plus_half = 0.5*(rho(R).*v(R) + rho.*v);
 pv_j_minus_half = 0.5*(rho(L).*v(L) + rho.*v);
 
 %Coef + or -
-coef_plus = gamma.*gamma(R)./(gamma(R)-gamma);
-coef_minus = gamma.*gamma(L)./(gamma-gamma(L));
+coef_plus = ( 1./gamma - 1./gamma(R) )./(v_j - v_j_plus1);
+coef_minus = ( 1./gamma(L) - 1./gamma )./(v_j_minus1 - v_j);
 
 %Update rho, u
 % Euler Update:
 rho_n_plus1 = rho_n - c*(pv_j_plus_half - pv_j_minus_half);
-rho_u_n_plus1 = rho_u_n + (c*coef_plus.*(v_j - v_j_plus1).*pv_j_plus_half ...
-    - c*coef_minus.*(v_j_minus1 - v_j).*pv_j_minus_half);
+rho_u_n_plus1 = rho_u_n + (c*coef_plus.*pv_j_plus_half ...
+    - c*coef_minus.*pv_j_minus_half);
 
 %Extract rho and u
 rho = rho_n_plus1;
