@@ -6,7 +6,7 @@ grid.Nx = 100; % Only specified here
 grid.xmin = 0;
 grid.xmax = 1.0;
 grid.time = 0;
-grid.t_max = 0.15;
+grid.t_max = 0.35;
 grid.Output_interval = 100;
 Nx = grid.Nx;
 
@@ -17,7 +17,7 @@ grid.iter = 1;
 grid.dx = (grid.xmax - grid.xmin)/grid.Nx;
 grid.time = 0;
 grid.cfl = 0.98; %clf = udt/dx <= C_max
-grid.dt = (1/2)*0.98*grid.dx/50;
+grid.dt = (1/4)*0.98*grid.dx/50;
 grid.NT = ceil(grid.t_max/grid.dt);
 grid.L = (grid.xmax - grid.xmin);
 
@@ -26,7 +26,7 @@ grid.x = linspace(grid.xmin,grid.xmax,Nx);
 
 %Quantities
 rho = 1.5 + sin((2*grid.x*pi)*((Nx-1)/Nx)/(grid.L));
-u = 1 + sin((2*grid.x*pi)*((Nx-1)/Nx)/(grid.L));
+u = 1.5 + sin((2*grid.x*pi)*((Nx-1)/Nx)/(grid.L));
 
 
 %Right and left
@@ -36,6 +36,9 @@ grid.L = mod( linspace(-1,Nx-2,Nx), Nx) + 1; %Good
 % KE vs t
 grid.E_vs_t = zeros(1,grid.NT);
 grid.time_vec = linspace(0,grid.t_max,grid.NT);
-grid.E0 = sum((1/2) * rho.*u.*u).*grid.dx;
+
+gamma = sqrt(1+u.^2);
+KE = (gamma - 1).*rho;
+grid.E0 = sum(KE).*grid.dx;
 
 end

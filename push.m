@@ -5,7 +5,7 @@ function [rho,u] = push(rho,u,grid)
 % CD Space derivatives (Unstable?)
 % Should be horendously diffusive but conserve KE
 
-%SSP-RK3 (4 stage)
+%SSP-RK3 (3 stage)
 rho0 = rho;
 rho0_u0 = rho.*u;
 rho_u = rho.*u;
@@ -58,21 +58,27 @@ c = grid.dt/grid.dx;
 R = grid.R;
 L = grid.L;
 u = rho_u./rho;
+gamma = sqrt(1+u.*u);
+v = u./gamma; 
 rho_n = rho;
 rho_u_n = rho_u;
-u_j = u;
-u_j_plus1 = u(R);
-u_j_minus1 = u(L);
+v_j = v;
+v_j_plus1 = v(R);
+v_j_minus1 = v(L);
 
 %Central averages to get ...
-pu_j_plus_half = 0.5*(rho(R).*u(R) + rho.*u);
-pu_j_minus_half = 0.5*(rho(L).*u(L) + rho.*u);
+pv_j_plus_half = 0.5*(rho(R).*v(R) + rho.*v);
+pv_j_minus_half = 0.5*(rho(L).*v(L) + rho.*v);
+
+%Coef + or -
+coef_plus = gamma.*gamma(R)./(gamma(R)-gamma);
+coef_minus = gamma.*gamma(L)./(gamma-gamma(L));
 
 %Update rho, u
 % Euler Update:
-rho_n_plus1 = rho_n - c*(pu_j_plus_half - pu_j_minus_half);
-rho_u_n_plus1 = rho_u_n - (c*0.5*(u_j + u_j_plus1).*pu_j_plus_half ...
-    - c*0.5*(u_j_minus1 + u_j).*pu_j_minus_half);
+rho_n_plus1 = rho_n - c*(pv_j_plus_half - pv_j_minus_half);
+rho_u_n_plus1 = rho_u_n + (c*coef_plus.*(v_j - v_j_plus1).*pv_j_plus_half ...
+    - c*coef_minus.*(v_j_minus1 - v_j).*pv_j_minus_half);
 
 %Extract rho and u
 rho = rho_n_plus1;
