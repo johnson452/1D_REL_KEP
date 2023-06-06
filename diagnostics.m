@@ -6,21 +6,6 @@ KE = (gamma - 1).*rho;
 fprintf("KE TOTAL: %1.12f\n",sum(KE)*grid.dx/grid.E0);
 grid.E_vs_t(grid.iter) = sum(KE);
 
-% Error:
-if (0)
-    %3-stage
-    % %for dt = (1/1)*0.98*grid.dx/50;
-    %KE_old = 0.999999996715
-    % %1/2 dt: O(3)
-    %KE_new = 0.999999999586
-
-    % 2-stage
-    % KE_old = 1.000001270097;
-    % %1/2 dt: O(2)
-    % KE_new = 1.000000311896;
-    %Error = 1/((1 - KE_old)/( 1 - KE_new));
-end
-
 % Run only at select iterations:
 if (mod ( grid.iter, grid.Output_interval ) == 0 || grid.iter == grid.NT)
 
